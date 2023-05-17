@@ -1,179 +1,135 @@
-# LangChain 中文入门教程
+# Hướng dẫn nhập môn LangChain bằng tiếng Việt
+> Để thuận tiện cho việc đọc, đã tạo ra gitbook: https://? liaokong.gitbook.io/llm-kai-fa-jiao-cheng/
 
-> 为了便于阅读，已生成gitbook：https://liaokong.gitbook.io/llm-kai-fa-jiao-cheng/
+> Đã thêm CHANGELOG, nếu có nội dung mới, tôi sẽ viết ở đây để bạn có thể dễ dàng xem nội dung cập nhật mới
 
-> 加了个 [CHANGELOG](CHANGELOG.md),更新了新的内容我会写在这里，方便之前看过的朋友快速查看新的更新内容
+> Nếu bạn muốn thay đổi địa chỉ gốc yêu cầu API OPENAI thành địa chỉ proxy của riêng mình, bạn có thể thay đổi bằng cách đặt biến môi trường "OPENAI_API_BASE".
+> 
+> Mã tham khảo liên quan: https://github.com/openai/openai-python/blob/d6fa3bfaae69d639b0dd2e9251b375d7070bbef1/openai/__init__.py#L48
 
-> 如果想把 OPENAI API 的请求根路由修改成自己的代理地址，可以通过设置环境变量 “OPENAI\_API\_BASE” 来进行修改。
->
-> 相关参考代码：[https://github.com/openai/openai-python/blob/d6fa3bfaae69d639b0dd2e9251b375d7070bbef1/openai/\_\_init\_\_.py#L48](https://github.com/openai/openai-python/blob/d6fa3bfaae69d639b0dd2e9251b375d7070bbef1/openai/\_\_init\_\_.py#L48)
+## Giới thiệu
+Như chúng ta đã biết, API của OpenAI không thể kết nối mạng, vì vậy nếu chỉ sử dụng chức năng của chính mình để tìm kiếm trực tuyến và cung cấp câu trả lời, tóm tắt tài liệu PDF, trả lời câu hỏi dựa trên video YouTube, vv, thì chắc chắn là không thể thực hiện được. Vì vậy, chúng ta sẽ giới thiệu một thư viện nguồn mở rất mạnh mẽ: LangChain.
 
-## 介绍
+> Tài liệu: https://python.langchain.com/en/latest/
 
-众所周知 OpenAI 的 API 无法联网的，所以如果只使用自己的功能实现联网搜索并给出回答、总结 PDF 文档、基于某个 Youtube 视频进行问答等等的功能肯定是无法实现的。所以，我们来介绍一个非常强大的第三方开源库：`LangChain` 。
+Thư viện này hiện đang rất sôi động, được cập nhật hàng ngày và đã có 22k ngôi sao, tốc độ cập nhật nhanh chóng.
 
-> 文档地址：https://python.langchain.com/en/latest/
+LangChain là một framework được sử dụng để phát triển ứng dụng được định hướng bởi mô hình ngôn ngữ. Nó có hai khả năng chính:
 
-这个库目前非常活跃，每天都在迭代，已经有 22k 的 star，更新速度飞快。
-
-LangChain 是一个用于开发由语言模型驱动的应用程序的框架。他主要拥有 2 个能力：
-
-1. 可以将 LLM 模型与外部数据源进行连接
-2. 允许与 LLM 模型进行交互
-
-> LLM 模型：Large Language Model，大型语言模型
+1. Kết nối mô hình LLM với nguồn dữ liệu bên ngoài.
+2. Tương tác với mô hình LLM.
+> Mô hình LLM: Large Language Model, Mô hình ngôn ngữ lớn
 
 ##
 
-## 基础功能
+## Các chức năng cơ bản
+> Gọi LLM
 
-LLM 调用
+* Hỗ trợ nhiều giao diện mô hình, chẳng hạn như OpenAI, Hugging Face, AzureOpenAI ...
+* Fake LLM, được sử dụng cho kiểm thử
+* Hỗ trợ bộ nhớ cache, chẳng hạn in-mem (trong bộ nhớ), SQLite, Redis, SQL
+* Ghi lại lượng sử dụng
+* Hỗ trợ chế độ luồng (trả về từng ký tự một, tương tự hiệu ứng đánh máy)
 
-* 支持多种模型接口，比如 OpenAI、Hugging Face、AzureOpenAI ...
-* Fake LLM，用于测试
-* 缓存的支持，比如 in-mem（内存）、SQLite、Redis、SQL
-* 用量记录
-* 支持流模式（就是一个字一个字的返回，类似打字效果）
+Quản lý Prompt, hỗ trợ các mẫu tùy chỉnh
 
-Prompt管理，支持各种自定义模板
+Có nhiều công cụ tải tài liệu, chẳng hạn như Email, Markdown, PDF, YouTube ...
 
-拥有大量的文档加载器，比如 Email、Markdown、PDF、Youtube ...
+Hỗ trợ chỉ mục
 
-对索引的支持
-
-* 文档分割器
-* 向量化
-* 对接向量存储与搜索，比如 Chroma、Pinecone、Qdrand
+* Trình phân đoạn tài liệu
+* Vector hóa
+* Liên kết với lưu trữ và tìm kiếm vector, chẳng hạn Chroma, Pinecone, Qdrand
 
 Chains
 
 * LLMChain
-* 各种工具Chain
+* Các công cụ Chain khác nhau
 * LangChainHub
 
-## 必知概念
+## Khái niệm cần biết
 
-相信大家看完上面的介绍多半会一脸懵逼。不要担心，上面的概念其实在刚开始学的时候不是很重要，当我们讲完后面的例子之后，在回来看上面的内容会一下明白很多。
+Tôi tin rằng sau khi đọc phần giới thiệu ở trên, hầu hết mọi người sẽ cảm thấy mơ hồ. Đừng lo, những khái niệm trên thực tế không quá quan trọng khi bạn mới bắt đầu học, khi chúng ta đã hoàn thành các ví dụ phía sau, quay lại xem nội dung trên sẽ hiểu rõ hơn.
 
-但是，这里有几个概念是必须知道的。
+Tuy nhiên, có một số khái niệm bạn phải biết.
 
 ##
 
-### Loader 加载器
+### Loader (Trình tải)
 
-顾名思义，这个就是从指定源进行加载数据的。比如：文件夹 `DirectoryLoader`、Azure 存储 `AzureBlobStorageContainerLoader`、CSV文件 `CSVLoader`、印象笔记 `EverNoteLoader`、Google网盘 `GoogleDriveLoader`、任意的网页 `UnstructuredHTMLLoader`、PDF `PyPDFLoader`、S3 `S3DirectoryLoader`/`S3FileLoader`、
+Như tên gọi, đây là công cụ dùng để tải dữ liệu từ nguồn cụ thể. Ví dụ: `DirectoryLoader` (trình tải thư mục), `AzureBlobStorageContainerLoader` (trình tải lưu trữ Azure Blob), `CSVLoader` (trình tải file CSV), `EverNoteLoader` (trình tải từ EverNote), `GoogleDriveLoader` (trình tải từ Google Drive), `UnstructuredHTMLLoader` (trình tải từ trang web bất kỳ), `PyPDFLoader` (trình tải từ file PDF), `S3DirectoryLoader/S3FileLoader` (trình tải từ dịch vụ lưu trữ S3), `YoutubeLoader` (trình tải từ YouTube), và còn nhiều trình tải khác nữa. Các trình tải này đều được cung cấp bởi thư viện LangChain.
 
-Youtube `YoutubeLoader` 等等，上面只是简单的进行列举了几个，官方提供了超级的多的加载器供你使用。
+> Tài liệu: https://python.langchain.com/en/latest/modules/indexes/document_loaders.html
 
-> https://python.langchain.com/en/latest/modules/indexes/document\_loaders.html
+### 
 
-###
+### Document (Tài liệu)
 
-### Document 文档
-
-当使用loader加载器读取到数据源后，数据源需要转换成 Document 对象后，后续才能进行使用。
+Sau khi dữ liệu được tải lên bằng trình tải, nó cần được chuyển đổi thành đối tượng Document trước khi có thể sử dụng cho các mục đích tiếp theo.
 
 ###
 
-### Text Spltters 文本分割
+### Text Splitters (Trình tách văn bản)
 
-顾名思义，文本分割就是用来分割文本的。为什么需要分割文本？因为我们每次不管是做把文本当作 prompt 发给 openai api ，还是还是使用 openai api embedding 功能都是有字符限制的。
+Như tên gọi, trình tách văn bản được sử dụng để tách văn bản thành các phần nhỏ. Tại sao chúng ta cần phân tách văn bản? Bởi vì khi gửi văn bản làm prompt cho API của OpenAI hoặc sử dụng tính năng nhúng của OpenAI API, chúng ta luôn có giới hạn về số ký tự.
 
-比如我们将一份300页的 pdf 发给 openai api，让他进行总结，他肯定会报超过最大 Token 错。所以这里就需要使用文本分割器去分割我们 loader 进来的 Document。
-
-###
-
-### Vectorstores 向量数据库
-
-因为数据相关性搜索其实是向量运算。所以，不管我们是使用 openai api embedding 功能还是直接通过向量数据库直接查询，都需要将我们的加载进来的数据 `Document` 进行向量化，才能进行向量运算搜索。转换成向量也很简单，只需要我们把数据存储到对应的向量数据库中即可完成向量的转换。
-
-官方也提供了很多的向量数据库供我们使用。
-
-> https://python.langchain.com/en/latest/modules/indexes/vectorstores.html
+Ví dụ, nếu chúng ta gửi một tệp PDF gồm 300 trang cho API của OpenAI để tóm tắt, chắc chắn nó sẽ báo lỗi vượt quá giới hạn số ký tự tối đa. Do đó, chúng ta cần sử dụng trình tách văn bản để phân tách Document đã tải từ trình tải.
 
 ###
 
-### Chain 链
+### Vectorstores (Cơ sở dữ liệu vector)
 
-我们可以把 Chain 理解为任务。一个 Chain 就是一个任务，当然也可以像链条一样，一个一个的执行多个链。
+Vì tìm kiếm liên quan đến dữ liệu thực chất là hoạt động vector, nên khi sử dụng tính năng nhúng của OpenAI API hoặc truy vấn trực tiếp từ cơ sở dữ liệu vector, chúng ta cần chuyển đổi `Document` đã tải thành vector để thực hiện tìm kiếm vector. Việc chuyển đổi thành vector cũng rất đơn giản, chỉ cần lưu trữ dữ liệu vào cơ sở dữ liệu vector tương ứng.
+
+Thư viện LangChain cũng cung cấp nhiều cơ sở dữ liệu vector cho chúng ta sử dụng.
+
+> Tài liệu: https://python.langchain.com/en/latest/modules/indexes/vectorstores.html
 
 ###
 
-### Agent 代理
+### Chain (Dây chuyền)
 
-我们可以简单的理解为他可以动态的帮我们选择和调用chain或者已有的工具。
+Chúng ta có thể hiểu Chain như một nhiệm vụ. Một Chain là một nhiệm vụ, và tất nhiên, chúng ta cũng có thể thực hiện nhiều nhiệm vụ như một dây chuyền.
 
-执行过程可以参考下面这张图:
+###
+
+### Agent (Đại lý)
+
+Chúng ta có thể hiểu Agent như một người đại diện có khả năng chọn lựa và gọi Chain hoặc công cụ đã có một cách linh hoạt.
+
+Quá trình thực thi có thể tham khảo hình ảnh dưới đây:
 
 ![image-20230406213322739](doc/image-20230406213322739.png)
 
-### Embedding
+### Embedding (Nhúng)
 
-用于衡量文本的相关性。这个也是 OpenAI API 能实现构建自己知识库的关键所在。
+Dùng để đo lường mức độ liên quan giữa các đoạn văn bản. Đây cũng là yếu tố quan trọng nhất khi xây dựng cơ sở kiến thức của riêng mình bằng OpenAI API.
 
-他相比 fine-tuning 最大的优势就是，不用进行训练，并且可以实时添加新的内容，而不用加一次新的内容就训练一次，并且各方面成本要比 fine-tuning 低很多。
+So với fine-tuning, ưu điểm lớn nhất của nhúng là không cần huấn luyện và có thể thêm nội dung mới theo thời gian thực mà không cần huấn luyện lại từ đầu, đồng thời chi phí thấp hơn về mọi mặt so với fine-tuning.
 
-> 具体比较和选择可以参考这个视频：https://www.youtube.com/watch?v=9qq6HTr7Ocw
+> Bạn có thể tham khảo video này để so sánh và lựa chọn cụ thể: https://www.youtube.com/watch?v=9qq6HTr7Ocw
 
-##
+## 
 
-## 实战
+## Thực hành
+Sau khi đã hiểu các khái niệm cần thiết ở trên, có thể bạn vẫn còn mơ hồ. Điều này không quan trọng, tôi tin sau khi hoàn thành các ví dụ phía sau, bạn sẽ hiểu rõ hơn về nội dung trên và cảm nhận được sức mạnh thực sự của thư viện này.
 
-通过上面的必备概念大家应该已经可以对 LangChain 有了一定的了解，但是可能还有有些懵。
+Vì chúng ta đang đi sâu vào việc nâng cao OpenAI API, nên các ví dụ sau đây sẽ sử dụng LLM của OpenAI làm ví dụ. Sau đó, bạn có thể thay thế bằng mô hình LLM mà bạn cần dựa trên nhiệm vụ của mình.
 
-这都是小问题，我相信看完后面的实战，你们就会彻底的理解上面的内容，并且能感受到这个库的真正强大之处。
+Tất nhiên, ở cuối bài viết này, toàn bộ mã sẽ được lưu trữ dưới dạng tệp colab ipynb để bạn có thể học tập.
 
-因为我们 OpenAI API 进阶，所以我们后面的范例使用的 LLM 都是以Open AI 为例，后面大家可以根据自己任务的需要换成自己需要的 LLM 模型即可。
-
-当然，在这篇文章的末尾，全部的全部代码都会被保存为一个 colab 的 ipynb 文件提供给大家来学习。
-
-> 建议大家按顺序去看每个例子，因为下一个例子会用到上一个例子里面的知识点。
+> Đề nghị bạn tuần tự xem từng ví dụ, vì ví dụ tiếp theo sẽ sử dụng những điểm kiến thức đã được giới thiệu trong ví dụ trước.
 >
-> 当然，如果有看不懂的也不用担心，可以继续往后看，第一次学习讲究的是不求甚解。
+> Tuy nhiên, nếu bạn không hiểu một số điều, không cần lo lắng, bạn có thể tiếp tục đọc, vì trong lần học đầu tiên, không cần phải hiểu rõ tất cả.
 
-###
-
-### 完成一次问答
-
-第一个案例，我们就来个最简单的，用 LangChain 加载 OpenAI 的模型，并且完成一次问答。
-
-在开始之前，我们需要先设置我们的 openai 的 key，这个 key 可以在用户管理里面创建，这里就不细说了。
 
 ```python
 import os
-os.environ["OPENAI_API_KEY"] = '你的api key'
+os.environ["OPENAI_API_KEY"] = 'YOUR_API_KEY'
+os.environ["SERPAPI_API_KEY"] = 'YOUR_API_KEY'
 ```
 
-然后，我们进行导入和执行
-
-```py
-from langchain.llms import OpenAI
-
-llm = OpenAI(model_name="text-davinci-003",max_tokens=1024)
-llm("怎么评价人工智能")
-```
-
-![image-20230404232621517](doc/image-20230404232621517.png)
-
-这时，我们就可以看到他给我们的返回结果了，怎么样，是不是很简单。
-
-### 通过 Google 搜索并返回答案
-
-接下来，我们就来搞点有意思的。我们来让我们的 OpenAI api 联网搜索，并返回答案给我们。
-
-这里我们需要借助 Serpapi 来进行实现，Serpapi 提供了 google 搜索的 api 接口。
-
-首先需要我们到 Serpapi 官网上注册一个用户，https://serpapi.com/ 并复制他给我们生成 api key。
-
-然后我们需要像上面的 openai api key 一样设置到环境变量里面去。
-
-```python
-import os
-os.environ["OPENAI_API_KEY"] = '你的api key'
-os.environ["SERPAPI_API_KEY"] = '你的api key'
-```
-
-然后，开始编写我的代码
+Sau đó, bạn có thể bắt đầu viết code của mình.
 
 ```python
 from langchain.agents import load_tools
@@ -181,67 +137,65 @@ from langchain.agents import initialize_agent
 from langchain.llms import OpenAI
 from langchain.agents import AgentType
 
-# 加载 OpenAI 模型
-llm = OpenAI(temperature=0,max_tokens=2048) 
+# Tải mô hình OpenAI
+llm = OpenAI(temperature=0, max_tokens=2048)
 
- # 加载 serpapi 工具
+# Tải công cụ serpapi
 tools = load_tools(["serpapi"])
 
-# 如果搜索完想在计算一下可以这么写
+# Nếu sau khi tìm kiếm bạn muốn tính toán một số thứ khác, bạn có thể viết như sau
 # tools = load_tools(['serpapi', 'llm-math'], llm=llm)
 
-# 如果搜索完想再让他再用python的print做点简单的计算，可以这样写
-# tools=load_tools(["serpapi","python_repl"])
+# Nếu sau khi tìm kiếm bạn muốn sử dụng lệnh `print` trong Python để thực hiện tính toán đơn giản, bạn có thể viết như sau
+# tools = load_tools(["serpapi","python_repl"])
 
-# 工具加载后都需要初始化，verbose 参数为 True，会打印全部的执行详情
+# Sau khi tải công cụ, cần khởi tạo chúng. Tham số verbose=True sẽ hiển thị thông tin chi tiết về quá trình thực thi.
 agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
 
-# 运行 agent
+# Chạy agent
 agent.run("What's the date today? What great events have taken place today in history?")
 ```
-
 ![image-20230404234236982](doc/image-20230404234236982.png)
 
-我们可以看到，他正确的返回了日期（有时差），并且返回了历史上的今天。
+Chúng ta có thể thấy rằng agent đã trả về ngày hôm nay (dựa trên múi giờ) và các sự kiện quan trọng trong lịch sử ngày hôm nay.
 
-在 chain 和 agent 对象上都会有 `verbose` 这个参数，这个是个非常有用的参数，开启他后我们可以看到完整的 chain 执行过程。
+Cả chain và agent đều có tham số `verbose`, đây là một tham số rất hữu ích, khi bật nó sẽ hiển thị quá trình thực thi của chain đầy đủ.
 
-可以在上面返回的结果看到，他将我们的问题拆分成了几个步骤，然后一步一步得到最终的答案。
+Trong kết quả trả về ở trên, chúng ta có thể thấy rằng nó đã phân tách câu hỏi của chúng ta thành các bước và từng bước dẫn đến kết quả cuối cùng.
 
-关于agent type 几个选项的含义（理解不了也不会影响下面的学习，用多了自然理解了）：
+Về các loại agent (agent type) có thể hiểu như sau (nếu bạn không hiểu, không sao cả, việc này không ảnh hưởng đến việc học tiếp phía dưới):
 
-* zero-shot-react-description: 根据工具的描述和请求内容的来决定使用哪个工具（最常用）
-* react-docstore: 使用 ReAct 框架和 docstore 交互, 使用`Search` 和`Lookup` 工具, 前者用来搜, 后者寻找term, 举例: `Wipipedia` 工具
-* self-ask-with-search 此代理只使用一个工具: Intermediate Answer, 它会为问题寻找事实答案(指的非 gpt 生成的答案, 而是在网络中,文本中已存在的), 如 `Google search API` 工具
-* conversational-react-description: 为会话设置而设计的代理, 它的prompt会被设计的具有会话性, 且还是会使用 ReAct 框架来决定使用来个工具, 并且将过往的会话交互存入内存
+* zero-shot-react-description: Dựa vào mô tả của công cụ và nội dung yêu cầu để quyết định sử dụng công cụ nào (phổ biến nhất).
+* react-docstore: Tương tác với ReAct framework và docstore, sử dụng công cụ Search và Lookup, ví dụ: công cụ Wikipedia.
+* self-ask-with-search: Agent này chỉ sử dụng một công cụ: Intermediate Answer, nó sẽ tìm các câu trả lời dựa trên thực tế (điều đó có nghĩa là không phải câu trả lời được tạo bởi GPT, mà là câu trả lời đã tồn tại trong mạng lưới, văn bản, ví dụ: công cụ Google search API.
+* conversational-react-description: Được thiết kế cho các tương tác hội thoại, prompt của nó được thiết kế có tính liên quan đến hội thoại và vẫn sử dụng ReAct framework để quyết định sử dụng công cụ nào, và lưu trữ tương tác trước trong bộ nhớ.
+Bạn có thể đọc về ReAct tại đây: https://arxiv.org/pdf/2210.03629.pdf
 
-> reAct 介绍可以看这个：https://arxiv.org/pdf/2210.03629.pdf
+> Thực hiện ReAct mode của LLM bằng Python: https://til.simonwillison.net/llms/python-react-pattern
 >
-> LLM 的 ReAct 模式的 Python 实现: https://til.simonwillison.net/llms/python-react-pattern
->
-> agent type 官方解释：
+> Giải thích về agent type:
 >
 > https://python.langchain.com/en/latest/modules/agents/agents/agent\_types.html?highlight=zero-shot-react-description
 
-> 有一点要说明的是，这个 `serpapi` 貌似对中文不是很友好，所以提问的 prompt 建议使用英文。
+> Một điểm cần lưu ý là `serpapi` có vẻ không hỗ trợ tiếng Việt tốt, vì vậy, đề nghị sử dụng tiếng Anh trong prompt.
 
-当然，官方已经写好了 `ChatGPT Plugins` 的 agent，未来 chatgpt 能用啥插件，我们在 api 里面也能用插件，想想都美滋滋。
+Tất nhiên, OpenAI đã viết sẵn agent cho `ChatGPT Plugins`, trong tương lai, khi ChatGPT có thể sử dụng các plugin, chúng ta cũng có thể sử dụng các plugin trong API, nghe đã thấy vui rồi.
 
-不过目前只能使用不用授权的插件，期待未来官方解决这个。
+Tuy nhiên, hiện tại chỉ có thể sử dụng các plugin không yêu cầu xác thực, hy vọng trong tương lai OpenAI sẽ giải quyết vấn đề này.
 
-感兴趣的可以看这个文档：https://python.langchain.com/en/latest/modules/agents/tools/examples/chatgpt\_plugins.html
+Bạn có thể xem tài liệu này để biết thêm chi tiết: https://python.langchain.com/en/latest/modules/agents/tools/examples/chatgpt\_plugins.html
 
-> Chatgpt 只能给官方赚钱，而 Openai API 能给我赚钱
+> ChatGPT chỉ giúp OpenAI kiếm tiền, trong khi OpenAI API giúp tôi kiếm tiền.
 
-### 对超长文本进行总结
+### Đối với việc tóm tắt văn bản dài
 
-假如我们想要用 openai api 对一个段文本进行总结，我们通常的做法就是直接发给 api 让他总结。但是如果文本超过了 api 最大的 token 限制就会报错。
+Khi chúng ta muốn sử dụng API của OpenAI để tóm tắt một đoạn văn bản, cách thông thường là gửi nó trực tiếp cho API để tóm tắt. Tuy nhiên, nếu đoạn văn bản vượt quá giới hạn token tối đa của API, sẽ xảy ra lỗi.
 
-这时，我们一般会进行对文章进行分段，比如通过 tiktoken 计算并分割，然后将各段发送给 api 进行总结，最后将各段的总结再进行一个全部的总结。
+Trong trường hợp này, chúng ta thường chia đoạn văn thành các phần nhỏ, ví dụ bằng cách sử dụng tiktoken để tính toán và chia nhỏ, sau đó gửi từng phần cho API để tóm tắt, cuối cùng tóm tắt từng phần lại thành một tóm tắt toàn bộ.
 
-如果，你用是 LangChain，他很好的帮我们处理了这个过程，使得我们编写代码变的非常简单。
+Nếu bạn sử dụng LangChain, nó đã giúp chúng ta xử lý quy trình này một cách tốt, làm cho việc viết mã trở nên rất đơn giản.
 
-废话不多说，直接上代码。
+Không nói nhiều, chúng ta đi thẳng vào mã.
 
 ```python
 from langchain.document_loaders import UnstructuredFileLoader
@@ -249,163 +203,172 @@ from langchain.chains.summarize import load_summarize_chain
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain import OpenAI
 
-# 导入文本
+# Tải văn bản
 loader = UnstructuredFileLoader("/content/sample_data/data/lg_test.txt")
-# 将文本转成 Document 对象
+# Chuyển văn bản thành đối tượng Document
 document = loader.load()
-print(f'documents:{len(document)}')
+print(f"Số lượng documents: {len(document)}")
 
-# 初始化文本分割器
+# Khởi tạo công cụ chia văn bản
 text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size = 500,
-    chunk_overlap = 0
+    chunk_size=500,
+    chunk_overlap=0
 )
 
-# 切分文本
+# Chia nhỏ văn bản
 split_documents = text_splitter.split_documents(document)
-print(f'documents:{len(split_documents)}')
+print(f"Số lượng documents sau khi chia nhỏ: {len(split_documents)}")
 
-# 加载 llm 模型
+# Tải mô hình llm
 llm = OpenAI(model_name="text-davinci-003", max_tokens=1500)
 
-# 创建总结链
+# Tạo chuỗi tóm tắt
 chain = load_summarize_chain(llm, chain_type="refine", verbose=True)
 
-# 执行总结链，（为了快速演示，只总结前5段）
+# Chạy chuỗi tóm tắt (chỉ tóm tắt 5 đoạn để minh họa nhanh)
 chain.run(split_documents[:5])
 ```
 
-首先我们对切割前和切割后的 document 个数进行了打印，我们可以看到，切割前就是只有整篇的一个 document，切割完成后，会把上面一个 document 切成 317 个 document。
+Trước tiên, chúng ta in ra số lượng documents trước và sau khi chia nhỏ, ta có thể thấy ban đầu chỉ có một document duy nhất, sau khi chia nhỏ, document được chia thành 317 document.
 
 ![image-20230405162631460](doc/image-20230405162631460.png)
 
-最终输出了对前 5 个 document 的总结。
+Kết quả cuối cùng là tóm tắt cho 5 document đầu tiên.
 
 ![image-20230405162937249](doc/image-20230405162937249.png)
 
-这里有几个参数需要注意：
+Dưới đây là một số tham số cần lưu ý:
 
-**文本分割器的 `chunk_overlap` 参数**
+**Tham số chunk_overlap của công cụ chia văn bản**
 
-这个是指切割后的每个 document 里包含几个上一个 document 结尾的内容，主要作用是为了增加每个 document 的上下文关联。比如，`chunk_overlap=0`时， 第一个 document 为 aaaaaa，第二个为 bbbbbb；当 `chunk_overlap=2` 时，第一个 document 为 aaaaaa，第二个为 aabbbbbb。
+Tham số này xác định số lượng ký tự cuối cùng của document trước được bao gồm trong từng document sau khi chia nhỏ, nó có tác dụng tăng liên kết ngữ cảnh giữa các document. Ví dụ, khi `chunk_overlap=0`, document đầu tiên là aaaaaa, document thứ hai là bbbbbb; khi `chunk_overlap=2`, document đầu tiên là aaaaaa, document thứ hai là aabbbbbb.
 
-不过，这个也不是绝对的，要看所使用的那个文本分割模型内部的具体算法。
+Tuy nhiên, điều này không tuyệt đối và phụ thuộc vào thuật toán cụ thể trong mô hình chia văn bản mà bạn sử dụng.
 
-> 文本分割器可以参考这个文档：https://python.langchain.com/en/latest/modules/indexes/text\_splitters.html
+> Bạn có thể tham khảo tài liệu về công cụ chia văn bản tại đây: https://python.langchain.com/en/latest/modules/indexes/text\_splitters.html
 
-**chain 的 `chain_type` 参数**
+**Tham số `chain_type` của chuỗi tóm tắt**
 
-这个参数主要控制了将 document 传递给 llm 模型的方式，一共有 4 种方式：
+Tham số này điều khiển cách truyền document cho mô hình llm, có tổng cộng 4 cách:
 
-`stuff`: 这种最简单粗暴，会把所有的 document 一次全部传给 llm 模型进行总结。如果document很多的话，势必会报超出最大 token 限制的错，所以总结文本的时候一般不会选中这个。
+`stuff`: Đây là cách đơn giản nhất, sẽ gửi tất cả các document cùng một lúc cho mô hình llm để tóm tắt. Nếu có quá nhiều document, sẽ xảy ra lỗi vượt quá giới hạn token tối đa, nên không thường được sử dụng trong tóm tắt văn bản.
 
-`map_reduce`: 这个方式会先将每个 document 进行总结，最后将所有 document 总结出的结果再进行一次总结。
+`map_reduce`: Phương pháp này sẽ tóm tắt từng document trước, sau đó tóm tắt tất cả các kết quả tóm tắt của các document lại một lần nữa.
 
 ![image-20230405165752743](doc/image-20230405165752743.png)
 
-`refine`: 这种方式会先总结第一个 document，然后在将第一个 document 总结出的内容和第二个 document 一起发给 llm 模型在进行总结，以此类推。这种方式的好处就是在总结后一个 document 的时候，会带着前一个的 document 进行总结，给需要总结的 document 添加了上下文，增加了总结内容的连贯性。
+`refine`: Phương pháp này sẽ tóm tắt document đầu tiên, sau đó gửi nội dung tóm tắt của document đầu tiên và document thứ hai cùng một lúc cho mô hình llm để tóm tắt, và tiếp tục như vậy. Phương pháp này có lợi thế là khi tóm tắt document tiếp theo, nó sẽ được tóm tắt kèm theo document trước đó, tăng tính liên tục của nội dung tóm tắt.
 
 ![image-20230405170617383](doc/image-20230405170617383.png)
 
-`map_rerank`: 这种一般不会用在总结的 chain 上，而是会用在问答的 chain 上，他其实是一种搜索答案的匹配方式。首先你要给出一个问题，他会根据问题给每个 document 计算一个这个 document 能回答这个问题的概率分数，然后找到分数最高的那个 document ，在通过把这个 document 转化为问题的 prompt 的一部分（问题+document）发送给 llm 模型，最后 llm 模型返回具体答案。
+`map_rerank`: Phương pháp này thường không được sử dụng trong chuỗi tóm tắt, mà thường được sử dụng trong chuỗi trả lời câu hỏi. Đầu tiên, bạn cần cung cấp một câu hỏi, nó sẽ tính điểm xác suất mỗi document có thể trả lời câu hỏi đó, sau đó tìm document có điểm cao nhất và gửi document đó cùng với câu hỏi để mô hình llm trả về câu trả lời cụ thể.
 
-### 构建本地知识库问答机器人
+### Xây dựng chatbot hỏi đáp dựa trên cơ sở tri thức cục bộ
 
-在这个例子中，我们会介绍如何从我们本地读取多个文档构建知识库，并且使用 Openai API 在知识库中进行搜索并给出答案。
+Trong ví dụ này, chúng ta sẽ hướng dẫn cách xây dựng một cơ sở tri thức bằng cách đọc nhiều tài liệu từ nguồn cục bộ và sử dụng OpenAI API để tìm kiếm và cung cấp câu trả lời trong cơ sở tri thức.
 
-这个是个很有用的教程，比如可以很方便的做一个可以介绍公司业务的机器人，或是介绍一个产品的机器人。
+Đây là một hướng dẫn rất hữu ích, ví dụ: bạn có thể dễ dàng tạo ra một chatbot để giới thiệu về hoạt động kinh doanh của công ty hoặc giới thiệu về một sản phẩm cụ thể.
 
 ```python
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.text_splitter import CharacterTextSplitter
-from langchain import OpenAI,VectorDBQA
+from langchain import OpenAI, VectorDBQA
 from langchain.document_loaders import DirectoryLoader
 from langchain.chains import RetrievalQA
 
-# 加载文件夹中的所有txt类型的文件
+# Tải tất cả các tệp có định dạng txt từ thư mục
 loader = DirectoryLoader('/content/sample_data/data/', glob='**/*.txt')
-# 将数据转成 document 对象，每个文件会作为一个 document
+# Chuyển đổi dữ liệu thành đối tượng document, mỗi tệp sẽ trở thành một document
 documents = loader.load()
 
-# 初始化加载器
+# Khởi tạo công cụ chia văn bản
 text_splitter = CharacterTextSplitter(chunk_size=100, chunk_overlap=0)
-# 切割加载的 document
+# Chia nhỏ document đã tải
 split_docs = text_splitter.split_documents(documents)
 
-# 初始化 openai 的 embeddings 对象
+# Khởi tạo đối tượng embeddings của OpenAI
 embeddings = OpenAIEmbeddings()
-# 将 document 通过 openai 的 embeddings 对象计算 embedding 向量信息并临时存入 Chroma 向量数据库，用于后续匹配查询
+# Tính toán vector nhúng và lưu trữ tạm thời thông tin vector của document vào cơ sở dữ liệu vector Chroma để sử dụng trong truy vấn khớp
 docsearch = Chroma.from_documents(split_docs, embeddings)
 
-# 创建问答对象
-qa = VectorDBQA.from_chain_type(llm=OpenAI(), chain_type="stuff", vectorstore=docsearch,return_source_documents=True)
-# 进行问答
-result = qa({"query": "科大讯飞今年第一季度收入是多少？"})
+# Tạo đối tượng hỏi đáp
+qa = VectorDBQA.from_chain_type(llm=OpenAI(), chain_type="stuff", vectorstore=docsearch, return_source_documents=True)
+# Tiến hành hỏi đáp
+result = qa({"query": "Tổng doanh thu của iFLYTEK trong quý đầu tiên của năm nay là bao nhiêu?"})
 print(result)
 ```
 
 ![image-20230405173730382](doc/image-20230405173730382.png)
 
-我们可以通过结果看到，他成功的从我们的给到的数据中获取了正确的答案。
+Chúng ta có thể thấy từ kết quả rằng nó thành công lấy ra câu trả lời chính xác từ dữ liệu chúng ta đã cung cấp.
 
-> 关于 Openai embeddings 详细资料可以参看这个连接: https://platform.openai.com/docs/guides/embeddings
+> Thông tin chi tiết về OpenAI embeddings có thể được xem tại liên kết này: https://platform.openai.com/docs/guides/embeddings
 
-### 构建向量索引数据库
+### Xây dựng cơ sở dữ liệu chỉ mục vector
 
-我们上个案例里面有一步是将 document 信息转换成向量信息和embeddings的信息并临时存入 Chroma 数据库。
+Trong ví dụ trước đó, chúng ta đã có một bước là chuyển đổi thông tin document thành thông tin vector và nhúng, sau đó lưu trữ tạm thời vào cơ sở dữ liệu Chroma.
 
-因为是临时存入，所以当我们上面的代码执行完成后，上面的向量化后的数据将会丢失。如果想下次使用，那么就还需要再计算一次embeddings，这肯定不是我们想要的。
+Tuy nhiên, vì đó chỉ là lưu trữ tạm thời, khi chúng ta hoàn thành việc thực thi mã trên, dữ liệu đã được nhúng sẽ bị mất đi. Nếu muốn sử dụng lại lần sau, chúng ta sẽ cần tính toán lại nhúng, điều này chắc chắn không phải là điều chúng ta muốn.
 
-那么，这个案例我们就来通过 Chroma 和 Pinecone 这两个数据库来讲一下如何做向量数据持久化。
+Vì vậy, trong ví dụ này, chúng ta sẽ giải thích cách lưu trữ dữ liệu vector một cách lâu dài thông qua hai cơ sở dữ liệu Chroma và Pinecone.
 
-> 因为 LangChain 支持的数据库有很多，所以这里就介绍两个用的比较多的，更多的可以参看文档:https://python.langchain.com/en/latest/modules/indexes/vectorstores/getting\_started.html
+> Vì LangChain hỗ trợ nhiều cơ sở dữ liệu, nên ở đây chúng tôi chỉ giới thiệu hai cơ sở dữ liệu được sử dụng phổ biến hơn, bạn có thể xem thêm tài liệu tại đây: https://python.langchain.com/en/latest/modules/indexes/vectorstores/getting\_started.html
 
 **Chroma**
 
-chroma 是个本地的向量数据库，他提供的一个 `persist_directory` 来设置持久化目录进行持久化。读取时，只需要调取 `from_document` 方法加载即可。
+Chroma là một cơ sở dữ liệu vector cục bộ, nó cung cấp phương thức `persist_directory` để thiết lập thư mục lưu trữ dữ liệu lâu dài. Khi đọc, chỉ cần sử dụng phương thức from_document để tải cơ sở dữ liệu.
 
 ```python
 from langchain.vectorstores import Chroma
 
-# 持久化数据
+# Lưu trữ dữ liệu
 docsearch = Chroma.from_documents(documents, embeddings, persist_directory="D:/vector_store")
 docsearch.persist()
 
-# 加载数据
+# Tải cơ sở dữ liệu
 docsearch = Chroma(persist_directory="D:/vector_store", embedding_function=embeddings)
-
 ```
 
 **Pinecone**
 
-Pinecone 是一个在线的向量数据库。所以，我可以第一步依旧是注册，然后拿到对应的 api key。https://app.pinecone.io/
+Pinecone là một cơ sở dữ liệu vector trực tuyến. Do đó, bước đầu tiên, bạn cần đăng ký tài khoản và nhận khóa API tương ứng từ https://app.pinecone.io/.
 
-> 免费版如果索引14天不使用会被自动清除。
+> Phiên bản miễn phí sẽ bị xóa tự động sau 14 ngày nếu không sử dụng chỉ mục.
 
-然后创建我们的数据库：
+Tiếp theo, hãy tạo cơ sở dữ liệu của chúng ta:
 
-Index Name：这个随意
+Tên chỉ mục: Tuỳ ý
 
-Dimensions：OpenAI 的 text-embedding-ada-002 模型为 OUTPUT DIMENSIONS 为 1536，所以我们这里填 1536
+Số chiều: Mô hình text-embedding-ada-002 của OpenAI có kích thước OUTPUT DIMENSIONS là 1536, vì vậy ta điền 1536 ở đây.
 
-Metric：可以默认为 cosine
+Phương pháp đo: Có thể mặc định là cosine
 
-Pod Type：想好就用 S1，想快就用 P1
+Loại Pod: S1 nếu bạn muốn tiết kiệm, P1 nếu bạn muốn tăng tốc độ
 
 ![image-20230405184646314](doc/image-20230405184646314.png)
 
-持久化数据和加载数据代码如下
+Lưu trữ dữ liệu và mã tải dữ liệu như sau
 
 ```python
-# 持久化数据
+# Lưu trữ dữ liệu
 docsearch = Pinecone.from_texts([t.page_content for t in split_docs], embeddings, index_name=index_name)
 
-# 加载数据
+# Tải dữ liệu
 docsearch = Pinecone.from_existing_index(index_name, embeddings)
 ```
 
-一个简单从数据库获取 embeddings，并回答的代码如下
+Dưới đây là phiên bản dịch tiếng Việt theo định dạng file MD5:
+
+​```python
+# Lưu trữ dữ liệu
+docsearch = Pinecone.from_texts([t.page_content for t in split_docs], embeddings, index_name=index_name)
+
+# Tải dữ liệu
+docsearch = Pinecone.from_existing_index(index_name, embeddings)
+​```
+
+Và đây là một ví dụ đơn giản về mã lấy embeddings từ cơ sở dữ liệu và trả lời:
 
 ```python
 from langchain.text_splitter import CharacterTextSplitter
@@ -417,30 +380,30 @@ from langchain.chains.question_answering import load_qa_chain
 
 import pinecone
 
-# 初始化 pinecone
+# Khởi tạo Pinecone
 pinecone.init(
-  api_key="你的api key",
-  environment="你的Environment"
+  api_key="YOUR_API_KEY",
+  environment="YOUR_ENVIRONMENT"
 )
 
 loader = DirectoryLoader('/content/sample_data/data/', glob='**/*.txt')
-# 将数据转成 document 对象，每个文件会作为一个 document
+# Chuyển đổi dữ liệu thành đối tượng document, mỗi tệp sẽ trở thành một document
 documents = loader.load()
 
-# 初始化加载器
+# Khởi tạo công cụ chia văn bản
 text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=0)
-# 切割加载的 document
+# Chia nhỏ document đã tải
 split_docs = text_splitter.split_documents(documents)
 
-index_name="liaokong-test"
+index_name = "liaokong-test"
 
-# 持久化数据
+# Lưu trữ dữ liệu
 # docsearch = Pinecone.from_texts([t.page_content for t in split_docs], embeddings, index_name=index_name)
 
-# 加载数据
-docsearch = Pinecone.from_existing_index(index_name,embeddings)
+# Tải dữ liệu
+docsearch = Pinecone.from_existing_index(index_name, embeddings)
 
-query = "科大讯飞今年第一季度收入是多少？"
+query = "Tổng doanh thu của iFLYTEK trong quý đầu tiên của năm nay là bao nhiêu?"
 docs = docsearch.similarity_search(query, include_metadata=True)
 
 llm = OpenAI(temperature=0)
@@ -450,9 +413,9 @@ chain.run(input_documents=docs, question=query)
 
 ![image-20230407001803057](doc/image-20230407001803057.png)
 
-### 使用GPT3.5模型构建油管频道问答机器人
+### Xây dựng chatbot trả lời câu hỏi trên kênh YouTube sử dụng mô hình GPT3.5
 
-在 chatgpt api（也就是 GPT-3.5-Turbo）模型出来后，因钱少活好深受大家喜爱，所以 LangChain 也加入了专属的链和模型，我们来跟着这个例子看下如何使用他。
+Sau khi GPT-3.5-Turbo được công bố, nó nhận được sự yêu thích vì tính linh hoạt và hiệu suất tốt. Vì vậy, LangChain cũng đã cung cấp một loạt các chuỗi và mô hình riêng cho GPT-3.5-Turbo. Hãy xem ví dụ sau để biết cách sử dụng nó.
 
 ```python
 import os
@@ -465,70 +428,67 @@ from langchain.chains import ChatVectorDBChain, ConversationalRetrievalChain
 
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts.chat import (
-  ChatPromptTemplate,
-  SystemMessagePromptTemplate,
-  HumanMessagePromptTemplate
+ChatPromptTemplate,
+SystemMessagePromptTemplate,
+HumanMessagePromptTemplate
 )
 
-# 加载 youtube 频道
+# Tải dữ liệu từ kênh YouTube
 loader = YoutubeLoader.from_youtube_channel('https://www.youtube.com/watch?v=Dj60HHy-Kqk')
-# 将数据转成 document
+
+# Chuyển đổi dữ liệu thành đối tượng document
 documents = loader.load()
 
-# 初始化文本分割器
+# Khởi tạo công cụ chia văn bản
 text_splitter = RecursiveCharacterTextSplitter(
-  chunk_size=1000,
-  chunk_overlap=20
+chunk_size=1000,
+chunk_overlap=20
 )
 
-# 分割 youtube documents
+# Chia nhỏ các tài liệu YouTube
 documents = text_splitter.split_documents(documents)
 
-# 初始化 openai embeddings
+# Khởi tạo embeddings OpenAI
 embeddings = OpenAIEmbeddings()
 
-# 将数据存入向量存储
+# Lưu trữ dữ liệu trong cơ sở dữ liệu vector
 vector_store = Chroma.from_documents(documents, embeddings)
-# 通过向量存储初始化检索器
+
+# Khởi tạo trình tìm kiếm từ cơ sở dữ liệu vector
 retriever = vector_store.as_retriever()
 
 system_template = """
-Use the following context to answer the user's question.
-If you don't know the answer, say you don't, don't try to make it up. And answer in Chinese.
------------
+Sử dụng ngữ cảnh sau để trả lời câu hỏi của người dùng.
+Nếu bạn không biết câu trả lời, hãy nói rằng bạn không biết, đừng cố tạo câu trả lời. Và trả lời bằng tiếng Việt.
 {context}
------------
 {chat_history}
 """
 
-# 构建初始 messages 列表，这里可以理解为是 openai 传入的 messages 参数
-messages = [
-  SystemMessagePromptTemplate.from_template(system_template),
-  HumanMessagePromptTemplate.from_template('{question}')
-]
+# Xây dựng danh sách tin nhắn ban đầu, tương tự như tham số `messages` được truyền cho OpenAI
+messages = [  SystemMessagePromptTemplate.from_template(system_template),  HumanMessagePromptTemplate.from_template('{question}')]
 
-# 初始化 prompt 对象
+# Khởi tạo đối tượng prompt
 prompt = ChatPromptTemplate.from_messages(messages)
 
 
-# 初始化问答链
+# Khởi tạo chuỗi Question-Answering
 qa = ConversationalRetrievalChain.from_llm(ChatOpenAI(temperature=0.1,max_tokens=2048),retriever,qa_prompt=prompt)
 
 
 chat_history = []
 while True:
-  question = input('问题：')
-  # 开始发送问题 chat_history 为必须参数,用于存储对话历史
+  question = input('Câu hỏi:')
+  # Bắt đầu gửi câu hỏi, chat_history là tham số bắt buộc, được sử dụng để lưu lịch sử trò chuyện
   result = qa({'question': question, 'chat_history': chat_history})
   chat_history.append((question, result['answer']))
   print(result['answer'])
 ```
 
-我们可以看到他能很准确的围绕这个油管视频进行问答
+Chúng ta có thể thấy rằng nó có thể trả lời câu hỏi xung quanh video YouTube một cách chính xác.
 
 ![image-20230406211923672](doc/image-20230406211923672.png)
 
-使用流式回答也很方便
+Nó cũng thuận tiện để sử dụng câu trả lời trực tuyến
 
 ```python
 from langchain.callbacks.base import CallbackManager
@@ -538,29 +498,29 @@ chat = ChatOpenAI(streaming=True, callback_manager=CallbackManager([StreamingStd
 resp = chat(chat_prompt_with_values.to_messages())
 ```
 
-### 用 OpenAI 连接万种工具
+### Kết nối các công cụ với OpenAI bằng Zapier
 
-我们主要是结合使用 `zapier` 来实现将万种工具连接起来。
+Chúng ta chủ yếu kết hợp sử dụng `Zapier` để kết nối các công cụ lại với nhau.
 
-所以我们第一步依旧是需要申请账号和他的自然语言 api key。https://zapier.com/l/natural-language-actions
+Vì vậy, bước đầu tiên vẫn là đăng ký tài khoản và nhận khóa API tự nhiên của Zapier. https://zapier.com/l/natural-language-actions
 
-他的 api key 虽然需要填写信息申请。但是基本填入信息后，基本可以秒在邮箱里看到审核通过的邮件。
+Mặc dù khóa API của nó yêu cầu bạn điền thông tin, nhưng sau khi điền thông tin, bạn có thể nhìn thấy email thông báo được chấp thuận trong hộp thư của mình.
 
-然后，我们通过右键里面的连接打开我们的api 配置页面。我们点击右侧的 `Manage Actions` 来配置我们要使用哪些应用。
+Sau đó, chúng ta mở cấu hình API của mình bằng cách nhấp chuột phải vào liên kết trong đó. Chúng ta nhấp vào "Quản lý các Hành động" bên phải để cấu hình các ứng dụng chúng ta muốn sử dụng.
 
-我在这里配置了 Gmail 读取和发邮件的 action，并且所有字段都选的是通过 AI 猜。
+Tôi đã cấu hình hành động đọc và gửi email của Gmail và tất cả các trường đều được chọn là "Dự đoán qua AI".
 
 ![image-20230406233319250](doc/image-20230406233319250.png)
 
 ![image-20230406234827815](doc/image-20230406234827815.png)
 
-配置好后，我们开始写代码
+
+Sau khi cấu hình xong, chúng ta bắt đầu viết mã
 
 ```python
 import os
 os.environ["ZAPIER_NLA_API_KEY"] = ''
 ```
-
 ```python
 from langchain.llms import OpenAI
 from langchain.agents import initialize_agent
@@ -573,36 +533,37 @@ zapier = ZapierNLAWrapper()
 toolkit = ZapierToolkit.from_zapier_nla_wrapper(zapier)
 agent = initialize_agent(toolkit.get_tools(), llm, agent="zero-shot-react-description", verbose=True)
 
-# 我们可以通过打印的方式看到我们都在 Zapier 里面配置了哪些可以用的工具
+# Chúng ta có thể in ra để xem chúng ta đã cấu hình các công cụ nào trong Zapier có thể sử dụng
 for tool in toolkit.get_tools():
   print (tool.name)
   print (tool.description)
   print ("\n\n")
 
-agent.run('请用中文总结最后一封"******@qq.com"发给我的邮件。并将总结发送给"******@qq.com"')
+agent.run('Vui lòng tóm tắt email cuối cùng từ "******@qq.com" mà tôi đã nhận và gửi tóm tắt đó đến "******@qq.com"')
 ```
 
 ![image-20230406234712909](doc/image-20230406234712909.png)
 
-我们可以看到他成功读取了`******@qq.com`给他发送的最后一封邮件，并将总结的内容又发送给了`******@qq.com`
+Chúng ta có thể thấy rằng nó thành công đọc email cuối cùng từ `******@qq.com` và gửi nội dung tóm tắt đó đến `******@qq.com`
 
-这是我发送给 Gmail 的邮件。
+Đây là tin nhắn tôi đã gửi tới Gmail.
 
 ![image-20230406234017369](doc/image-20230406234017369.png)
 
-这是他发送给 QQ 邮箱的邮件。
+Đây là email tôi gửi vào hộp thư QQ.
 
 ![image-20230406234800632](doc/image-20230406234800632.png)
 
-这只是个小例子，因为 `zapier` 有数以千计的应用，所以我们可以轻松结合 openai api 搭建自己的工作流。
 
-## 小例子们
+Đây chỉ là một ví dụ nhỏ, vì `Zapier` có hàng ngàn ứng dụng, chúng ta có thể dễ dàng kết hợp OpenAI API để xây dựng quy trình làm việc của riêng mình.
 
-一些比较大的知识点都已经讲完了，后面的内容都是一些比较有趣的小例子，当作拓展延伸。
+## Một số ví dụ nhỏ
 
-### **执行多个chain**
+Một số chủ đề lớn đã được trình bày, phần còn lại là một số ví dụ nhỏ thú vị để mở rộng thêm.
 
-因为他是链式的，所以他也可以按顺序依次去执行多个 chain
+### **Thực hiện nhiều chuỗi (chain) cùng một lúc**
+
+Vì chúng được kết nối chuỗi, nên chúng ta có thể thực hiện nhiều chuỗi theo thứ tự tuần tự.
 
 ```python
 from langchain.llms import OpenAI
@@ -610,37 +571,37 @@ from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.chains import SimpleSequentialChain
 
-# location 链
+# Chuỗi vị trí (location)
 llm = OpenAI(temperature=1)
-template = """Your job is to come up with a classic dish from the area that the users suggests.
-% USER LOCATION
+template = """Nhiệm vụ của bạn là tạo ra một món ăn cổ điển từ vùng mà người dùng gợi ý.
+% VỊ TRÍ NGƯỜI DÙNG
 {user_location}
 
-YOUR RESPONSE:
+CÂU TRẢ LỜI CỦA BẠN:
 """
 prompt_template = PromptTemplate(input_variables=["user_location"], template=template)
 location_chain = LLMChain(llm=llm, prompt=prompt_template)
 
-# meal 链
-template = """Given a meal, give a short and simple recipe on how to make that dish at home.
-% MEAL
+# Chuỗi bữa ăn (meal)
+
+template = """Với một bữa ăn, hãy đưa ra một công thức ngắn gọn và đơn giản để làm món ăn đó tại nhà.
+% BỮA ĂN
 {user_meal}
 
-YOUR RESPONSE:
+CÂU TRẢ LỜI CỦA BẠN:
 """
 prompt_template = PromptTemplate(input_variables=["user_meal"], template=template)
 meal_chain = LLMChain(llm=llm, prompt=prompt_template)
 
-# 通过 SimpleSequentialChain 串联起来，第一个答案会被替换第二个中的user_meal，然后再进行询问
+# Kết nối các chuỗi lại với nhau bằng SimpleSequentialChain, câu trả lời đầu tiên sẽ được thay thế bằng user_meal trong câu trả lời thứ hai, sau đó hỏi lại.
 overall_chain = SimpleSequentialChain(chains=[location_chain, meal_chain], verbose=True)
 review = overall_chain.run("Rome")
 ```
-
 ![image-20230406000133339](doc/image-20230406000133339.png)
 
-### **结构化输出**
+### **Kết xuất dữ liệu có cấu trúc**
 
-有时候我们希望输出的内容不是文本，而是像 json 那样结构化的数据。
+Đôi khi chúng ta muốn xuất ra nội dung không phải là văn bản mà là dữ liệu có cấu trúc giống như JSON.
 
 ```python
 from langchain.output_parsers import StructuredOutputParser, ResponseSchema
@@ -649,35 +610,35 @@ from langchain.llms import OpenAI
 
 llm = OpenAI(model_name="text-davinci-003")
 
-# 告诉他我们生成的内容需要哪些字段，每个字段类型式啥
+# Chúng ta khai báo các trường dữ liệu cần xuất ra và kiểu dữ liệu của mỗi trường
 response_schemas = [
-    ResponseSchema(name="bad_string", description="This a poorly formatted user input string"),
-    ResponseSchema(name="good_string", description="This is your response, a reformatted response")
+    ResponseSchema(name="bad_string", description="Đây là một chuỗi đầu vào của người dùng không đúng định dạng"),
+    ResponseSchema(name="good_string", description="Đây là câu trả lời của bạn, một câu trả lời được định dạng lại")
 ]
 
-# 初始化解析器
+# Khởi tạo trình phân tích kết xuất dữ liệu có cấu trúc từ các schema trên
 output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
 
-# 生成的格式提示符
+# Chuẩn bị thông báo định dạng
 # {
-#	"bad_string": string  // This a poorly formatted user input string
-#	"good_string": string  // This is your response, a reformatted response
+#   "bad_string": string  // Đây là một chuỗi đầu vào của người dùng không đúng định dạng
+#   "good_string": string  // Đây là câu trả lời của bạn, một câu trả lời được định dạng lại
 #}
 format_instructions = output_parser.get_format_instructions()
 
 template = """
-You will be given a poorly formatted string from a user.
-Reformat it and make sure all the words are spelled correctly
+Bạn sẽ nhận được một chuỗi đầu vào không đúng định dạng từ người dùng.
+Hãy định dạng lại nó và đảm bảo tất cả các từ đều được viết đúng
 
 {format_instructions}
 
-% USER INPUT:
+% ĐẦU VÀO NGƯỜI DÙNG:
 {user_input}
 
-YOUR RESPONSE:
+CÂU TRẢ LỜI CỦA BẠN:
 """
 
-# 讲我们的格式描述嵌入到 prompt 中去，告诉 llm 我们需要他输出什么样格式的内容
+# Nhúng mô tả định dạng vào trong prompt, thông báo cho llm biết chúng ta cần định dạng nội dung như thế nào
 prompt = PromptTemplate(
     input_variables=["user_input"],
     partial_variables={"format_instructions": format_instructions},
@@ -687,19 +648,19 @@ prompt = PromptTemplate(
 promptValue = prompt.format(user_input="welcom to califonya!")
 llm_output = llm(promptValue)
 
-# 使用解析器进行解析生成的内容
+# Sử dụng trình phân tích kết xuất để phân tích nội dung được tạo ra
 output_parser.parse(llm_output)
 ```
 
 ![image-20230406000017276](doc/image-20230406000017276.png)
 
-### **爬取网页并输出JSON数据**
+### **Crawl trang web và xuất dữ liệu JSON**
 
-有些时候我们需要爬取一些<mark style="color:red;">**结构性比较强**</mark>的网页，并且需要将网页中的信息以JSON的方式返回回来。
+Đôi khi chúng ta cần crawl một trang web có cấu trúc mạnh và trả về thông tin từ trang web đó dưới dạng JSON.
 
-我们就可以使用 `LLMRequestsChain` 类去实现，具体可以参考下面代码
+Chúng ta có thể sử dụng lớp `LLMRequestsChain` để thực hiện điều này, hãy tham khảo mã sau:
 
-> 为了方便理解，我在例子中直接使用了Prompt的方法去格式化输出结果，而没用使用上个案例中用到的 `StructuredOutputParser`去格式化，也算是提供了另外一种格式化的思路
+> Để dễ hiểu, trong ví dụ này tôi đã trực tiếp sử dụng phương thức của Prompt để định dạng kết quả đầu ra, thay vì sử dụng StructuredOutputParser như trong ví dụ trước, điều này cung cấp một cách tiếp cận khác để định dạng.
 
 ```python
 from langchain.prompts import PromptTemplate
@@ -708,12 +669,12 @@ from langchain.chains import LLMRequestsChain, LLMChain
 
 llm = OpenAI(model_name="gpt-3.5-turbo", temperature=0)
 
-template = """在 >>> 和 <<< 之间是网页的返回的HTML内容。
-网页是新浪财经A股上市公司的公司简介。
-请抽取参数请求的信息。
+template = """Trong đoạn giữa >>> và <<< là nội dung HTML trả về từ trang web.
+Trang web là mô tả vắn tắt của một công ty niêm yết trên thị trường chứng khoán A của Trang web Sina.
+Hãy trích xuất thông tin từ trang web đã yêu cầu.
 
 >>> {requests_result} <<<
-请使用如下的JSON格式返回数据
+Hãy trả về dữ liệu dưới định dạng JSON như sau
 {{
   "company_name":"a",
   "company_english_name":"b",
@@ -724,7 +685,7 @@ template = """在 >>> 和 <<< 之间是网页的返回的HTML内容。
   "Company_profile":"g"
 
 }}
-Extracted:"""
+Trích xuất:"""
 
 prompt = PromptTemplate(
     input_variables=["requests_result"],
@@ -740,11 +701,11 @@ response = chain(inputs)
 print(response['output'])
 ```
 
-我们可以看到，他很好的将格式化后的结果输出了出来
+Chúng ta có thể thấy rằng nó đã xuất ra đúng kết quả đã được định dạng.
 
 <figure><img src="doc/image-20230510234934.png" alt=""><figcaption></figcaption></figure>
 
-### **自定义agent中所使用的工具**
+### **Tùy chỉnh các công cụ được sử dụng trong agent**
 
 ```python
 from langchain.agents import initialize_agent, Tool
@@ -755,43 +716,41 @@ from langchain import LLMMathChain, SerpAPIWrapper
 
 llm = OpenAI(temperature=0)
 
-# 初始化搜索链和计算链
+# Khởi tạo chuỗi tìm kiếm và chuỗi tính toán
 search = SerpAPIWrapper()
 llm_math_chain = LLMMathChain(llm=llm, verbose=True)
 
-# 创建一个功能列表，指明这个 agent 里面都有哪些可用工具，agent 执行过程可以看必知概念里的 Agent 那张图
+# Tạo danh sách các công cụ mà agent có sẵn, quá trình thực hiện của agent có thể được xem trong hình biểu đồ trong khái niệm quan trọng về agent
 tools = [
     Tool(
         name = "Search",
         func=search.run,
-        description="useful for when you need to answer questions about current events"
-    ),
-    Tool(
-        name="Calculator",
-        func=llm_math_chain.run,
-        description="useful for when you need to answer questions about math"
-    )
+        description="hữu ích khi bạn cần trả lời câu hỏi về các sự kiện hiện tại"
+),
+Tool(
+name="Calculator",
+func=llm_math_chain.run,
+description="hữu ích khi bạn cần trả lời câu hỏi về toán học"
+)
 ]
-
-# 初始化 agent
+# Khởi tạo agent
 agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
 
-# 执行 agent
-agent.run("Who is Leo DiCaprio's girlfriend? What is her current age raised to the 0.43 power?")
-
+#Thực hiện agent
+agent.run("Bạn gái của Leo DiCaprio là ai? Tuổi hiện tại của cô ấy được gia hạn với mũi 0.43 là bao nhiêu?")
 ```
 
 ![image-20230406002117283](doc/image-20230406002117283.png)
 
-自定义工具里面有个比较有意思的地方，使用哪个工具的权重是靠 `工具中描述内容` 来实现的，和我们之前编程靠数值来控制权重完全不同。
+Tự định nghĩa công cụ có một phần thú vị, sử dụng trọng số của công cụ dựa trên `nội dung mô tả trong công cụ`, hoàn toàn khác biệt so với việc lập trình trước đây dựa trên các giá trị số để kiểm soát trọng số.
 
-比如 Calculator 在描述里面写到，如果你问关于数学的问题就用他这个工具。我们就可以在上面的执行过程中看到，他在我们请求的 prompt 中数学的部分，就选用了Calculator 这个工具进行计算。
+Ví dụ, trong phần mô tả của Calculator, nói rằng nếu bạn có câu hỏi về toán học, hãy sử dụng công cụ này. Chúng ta có thể thấy trong quá trình thực thi ở trên, công cụ đã chọn Calculator để tính toán phần toán học trong prompt mà chúng ta yêu cầu.
 
-### **使用Memory实现一个带记忆的对话机器人**
+### **Sử dụng Memory để tạo một trò chuyện bot với khả năng nhớ**
 
-上一个例子我们使用的是通过自定义一个列表来存储对话的方式来保存历史的。
+Trong ví dụ trước, chúng ta đã sử dụng cách lưu trữ lịch sử cuộc trò chuyện bằng cách tạo một danh sách tùy chỉnh.
 
-当然，你也可以使用自带的 memory 对象来实现这一点。
+Tất nhiên, bạn cũng có thể sử dụng đối tượng bộ nhớ tích hợp sẵn.
 
 ```python
 from langchain.memory import ChatMessageHistory
@@ -799,44 +758,43 @@ from langchain.chat_models import ChatOpenAI
 
 chat = ChatOpenAI(temperature=0)
 
-# 初始化 MessageHistory 对象
+# Khởi tạo đối tượng MessageHistory
 history = ChatMessageHistory()
 
-# 给 MessageHistory 对象添加对话内容
-history.add_ai_message("你好！")
-history.add_user_message("中国的首都是哪里？")
+# Thêm nội dung cuộc trò chuyện vào đối tượng MessageHistory
+history.add_ai_message("Xin chào!")
+history.add_user_message("Thủ đô của Trung Quốc là gì?")
 
-# 执行对话
+# Thực thi cuộc trò chuyện
 ai_response = chat(history.messages)
 print(ai_response)
 ```
 
-### **使用 Hugging Face 模型**
-
-使用 Hugging Face 模型之前，需要先设置环境变量
+### **Sử dụng mô hình Hugging Face**
+Trước khi sử dụng mô hình Hugging Face, bạn cần thiết lập biến môi trường trước
 
 ```python
 import os
 os.environ['HUGGINGFACEHUB_API_TOKEN'] = ''
 ```
 
-使用在线的 Hugging Face 模型
+Sử dụng mô hình Hugging Face trực tuyến
 
 ```python
 from langchain import PromptTemplate, HuggingFaceHub, LLMChain
 
-template = """Question: {question}
-Answer: Let's think step by step."""
+template = """Câu hỏi: {question}
+Trả lời: Hãy suy nghĩ từng bước một."""
 
 prompt = PromptTemplate(template=template, input_variables=["question"])
 llm = HuggingFaceHub(repo_id="google/flan-t5-xl", model_kwargs={"temperature":0, "max_length":64})
 llm_chain = LLMChain(prompt=prompt, llm=llm)
 
-question = "What NFL team won the Super Bowl in the year Justin Beiber was born?"
+question = "Đội NFL nào đã giành chiến thắng trong Super Bowl trong năm Justin Beiber sinh ra?"
 print(llm_chain.run(question))
 ```
 
-将 Hugging Face 模型直接拉到本地使用
+Trích dẫn mô hình Hugging Face trực tiếp và sử dụng trên máy cục bộ
 
 ```python
 from langchain.llms import HuggingFacePipeline
@@ -847,30 +805,30 @@ tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForSeq2SeqLM.from_pretrained(model_id, load_in_8bit=True)
 
 pipe = pipeline(
-    "text2text-generation",
-    model=model, 
-    tokenizer=tokenizer, 
-    max_length=100
+"text2text-generation",
+model=model,
+tokenizer=tokenizer,
+max_length=100
 )
 
 local_llm = HuggingFacePipeline(pipeline=pipe)
-print(local_llm('What is the capital of France? '))
+print(local_llm('Thủ đô của Pháp là gì? '))
 
-
-llm_chain = LLMChain(prompt=prompt,  llm=local_llm)
-question = "What is the capital of England?"
+llm_chain = LLMChain(prompt=prompt, llm=local_llm)
+question = "Thủ đô của Anh là gì?"
 print(llm_chain.run(question))
 ```
 
-将模型拉到本地使用的好处：
 
-* 训练模型
-* 可以使用本地的 GPU
-* 有些模型无法在 Hugging Face 运行
+Lợi ích của việc trích dẫn mô hình và sử dụng trên máy cục bộ:
 
-### **通过自然语言执行SQL命令**
+* Huấn luyện mô hình
+* Có thể sử dụng GPU cục bộ
+* Một số mô hình không thể chạy trên Hugging Face
 
-我们通过 `SQLDatabaseToolkit` 或者 `SQLDatabaseChain` 都可以实现执行SQL命令的操作
+### **Thực thi lệnh SQL bằng tự nhiên ngôn ngữ**
+
+Chúng ta có thể thực thi lệnh SQL bằng `SQLDatabaseToolkit` hoặc `SQLDatabaseChain`
 
 ```python
 from langchain.agents import create_sql_agent
@@ -887,7 +845,7 @@ agent_executor = create_sql_agent(
     verbose=True
 )
 
-agent_executor.run("Describe the playlisttrack table")
+agent_executor.run("Mô tả bảng playlisttrack")
 ```
 
 ```python
@@ -900,22 +858,13 @@ db_chain = SQLDatabaseChain(llm=llm, database=db, verbose=True)
 db_chain.run("How many employees are there?")
 ```
 
-这里可以参考这两篇文档：
+## Tổng kết
+Tất cả các ví dụ đã hoàn thành cơ bản, hy vọng các bạn có được những kiến thức từ bài viết này. Bài viết này chỉ là một giới thiệu sơ lược về LangChain, và tôi hy vọng rằng sẽ tiếp tục cập nhật chuỗi bài viết này nếu có những công nghệ tốt hơn sau này.
 
-[https://python.langchain.com/en/latest/modules/agents/toolkits/examples/sql\_database.html](https://python.langchain.com/en/latest/modules/agents/toolkits/examples/sql\_database.html)
+Vì LangChain đang phát triển rất nhanh, nên tôi tin chắc rằng nó sẽ tiếp tục phát triển các tính năng tốt hơn trong tương lai, do đó tôi rất tin tưởng vào thư viện mã nguồn mở này.
 
-[https://python.langchain.com/en/latest/modules/chains/examples/sqlite.html](https://python.langchain.com/en/latest/modules/chains/examples/sqlite.html)
+Hy vọng các bạn có thể phát triển các sản phẩm sáng tạo hơn bằng cách kết hợp với LangChain, thay vì chỉ tạo ra các sản phẩm chatbot tự động mà không có tính sáng tạo.
 
-## 总结
-
-所有的案例都基本已经结束了，希望大家能通过这篇文章的学习有所收获。这篇文章只是对 LangChain 一个初级的讲解，高级的功能希望大家继续探索。
-
-并且因为 LangChain 迭代极快，所以后面肯定会随着AI继续的发展，还会迭代出更好用的功能，所以我非常看好这个开源库。
-
-希望大家能结合 LangChain 开发出更有创意的产品，而不仅仅只搞一堆各种一键搭建chatgpt聊天客户端的那种产品。
-
-这篇标题后面加了个 `01` 是我希望这篇文章只是一个开始，后面如何出现了更好的技术我还是希望能继续更新下去这个系列。
-
-本文章的所有范例代码都在这里，祝大家学习愉快。
+Các đoạn mã ví dụ trong bài viết này có sẵn ở đây, chúc các bạn học tập vui vẻ.
 
 https://colab.research.google.com/drive/1ArRVMiS-YkhUlobHrU6BeS8fF57UeaPQ?usp=sharing
