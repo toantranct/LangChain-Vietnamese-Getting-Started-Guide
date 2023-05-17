@@ -358,9 +358,7 @@ docsearch = Pinecone.from_texts([t.page_content for t in split_docs], embeddings
 docsearch = Pinecone.from_existing_index(index_name, embeddings)
 ```
 
-Dưới đây là phiên bản dịch tiếng Việt theo định dạng file MD5:
-
-​```python
+```python
 # Lưu trữ dữ liệu
 docsearch = Pinecone.from_texts([t.page_content for t in split_docs], embeddings, index_name=index_name)
 
